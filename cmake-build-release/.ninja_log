@@ -1,0 +1,23 @@
+# ninja log v6
+1	1107	1729254923108199787	lacam3/CMakeFiles/lacam3.dir/src/lacam.cpp.o	92d208f735b1c215
+2	1173	1729254923109199783	lacam3/CMakeFiles/lacam3.dir/src/metrics.cpp.o	7c0eecbc3824f8bf
+2	1236	1729254923109199783	lacam3/CMakeFiles/lacam3.dir/src/refiner.cpp.o	5bfc049eafc19bed
+2	1312	1729254923109199783	lacam3/CMakeFiles/lacam3.dir/src/pibt.cpp.o	cda990eefc80dcc2
+1	1405	1729254923108199787	lacam3/CMakeFiles/lacam3.dir/src/heuristic.cpp.o	75107de301c31580
+1	1531	1729254923108199787	lacam3/CMakeFiles/lacam3.dir/src/lnode.cpp.o	3e7c718f3301047c
+0	1648	1729254923108199787	lacam3/CMakeFiles/lacam3.dir/src/collision_table.cpp.o	c74e7aa11c4977fe
+1	1738	1729254923108199787	lacam3/CMakeFiles/lacam3.dir/src/dist_table.cpp.o	60f49159b6d68084
+2	1774	1729254923109199783	lacam3/CMakeFiles/lacam3.dir/src/scatter.cpp.o	8be7a6f9ce02fb64
+1	1809	1729254923108199787	lacam3/CMakeFiles/lacam3.dir/src/hnode.cpp.o	d920143a92d608c1
+1173	2182	1729254924281194682	lacam3/CMakeFiles/lacam3.dir/src/translator.cpp.o	d09dff93e25efb47
+1108	2454	1729254924215194969	lacam3/CMakeFiles/lacam3.dir/src/sipp.cpp.o	f0df67fa3d5e4f96
+1236	2519	1729254924343194413	lacam3/CMakeFiles/lacam3.dir/src/utils.cpp.o	b324319cf2c09d64
+2	2740	1729254923109199783	lacam3/CMakeFiles/lacam3.dir/src/planner.cpp.o	b94320c417915bc4
+1	3785	1729254923108199787	lacam3/CMakeFiles/lacam3.dir/src/instance.cpp.o	5e7727910507aa67
+2	3800	1729254923109199783	lacam3/CMakeFiles/lacam3.dir/src/post_processing.cpp.o	3fe9b56471dccb3a
+1	3850	1729254923108199787	lacam3/CMakeFiles/lacam3.dir/src/graph.cpp.o	df0a9d03a5f549dd
+3850	3867	1729254926957183070	lacam3/liblacam3.a	504665f04d9fb8dc
+1312	4186	1729254924419194082	CMakeFiles/main.dir/main.cpp.o	7d0ecceb4b19ef04
+2	778	1729255074715611404	lacam3/CMakeFiles/lacam3.dir/src/pibt.cpp.o	cda990eefc80dcc2
+778	792	1729255075491608728	lacam3/liblacam3.a	504665f04d9fb8dc
+792	830	1729255075505608680	main	552ff1bce68d438e

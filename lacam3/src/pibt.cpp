@@ -1,5 +1,7 @@
 #include "../include/pibt.hpp"
 
+#include <unordered_set>
+
 PIBT::PIBT(const Instance *_ins, DistTable *_D, int seed, bool _flg_swap,
            Scatter *_scatter)
     : ins(_ins),
@@ -19,14 +21,19 @@ PIBT::PIBT(const Instance *_ins, DistTable *_D, int seed, bool _flg_swap,
 
 PIBT::~PIBT() {}
 
+
 bool PIBT::set_new_config(const Config &Q_from, Config &Q_to,
                           const std::vector<int> &order)
 {
   bool success = true;
+
+  for (auto i = 0; i < N; ++i) {
+    //     // set occupied now
+    occupied_now[Q_from[i]->id] = i;
+    }
+
   // setup cache & constraints check
   for (auto i = 0; i < N; ++i) {
-    // set occupied now
-    occupied_now[Q_from[i]->id] = i;
 
     // set occupied next
     if (Q_to[i] != nullptr) {
@@ -37,17 +44,24 @@ bool PIBT::set_new_config(const Config &Q_from, Config &Q_to,
       }
       // swap collision
       auto j = occupied_now[Q_to[i]->id];
-      if (j != NO_AGENT && j != i && Q_to[j] == Q_from[i]) {
+
+      if (j != NO_AGENT && j != i) {
         success = false;
         break;
       }
+
+      // if (j != NO_AGENT && j != i && Q_to[j] == Q_from[i]) {
+      //   success = false;
+      //   break;
+      // }
       occupied_next[Q_to[i]->id] = i;
     }
   }
 
   if (success) {
     for (auto i : order) {
-      if (Q_to[i] == nullptr && !funcPIBT(i, Q_from, Q_to)) {
+      std::unordered_set<Vertex *> ban;
+      if (Q_to[i] == nullptr && !funcPIBT(i, Q_from, Q_to,ban)) {
         success = false;
         break;
       }
@@ -63,9 +77,61 @@ bool PIBT::set_new_config(const Config &Q_from, Config &Q_to,
   return success;
 }
 
-bool PIBT::funcPIBT(const int i, const Config &Q_from, Config &Q_to)
+// bool PIBT::set_new_config(const Config &Q_from, Config &Q_to,
+//                           const std::vector<int> &order)
+// {
+//   bool success = true;
+//
+//   for (auto i = 0; i < N; ++i) {
+//     // set occupied now
+//     occupied_now[Q_from[i]->id] = i;
+//   }
+//
+//   // setup cache & constraints check
+//   for (auto i = 0; i < N; ++i) {
+//     // set occupied next
+//     if (Q_to[i] != nullptr) {
+//       // vertex collision
+//       if (occupied_next[Q_to[i]->id] != NO_AGENT) {
+//         success = false;
+//         break;
+//       }
+//
+//       auto j = occupied_now[Q_to[i]->id];
+//       if (j != NO_AGENT && j != i) {
+//         success = false;
+//         break;
+//       }
+//
+//       occupied_next[Q_to[i]->id] = i;
+//     }
+//   }
+//
+//   if (success) {
+//     for (auto i : order) {
+//       std::unordered_set<Vertex *> ban;
+//       if (Q_to[i] == nullptr && !funcPIBT(i, Q_from, Q_to, ban)) {
+//         success = false;
+//         break;
+//       }
+//     }
+//   }
+//
+//   // cleanup
+//   for (auto i = 0; i < N; ++i) {
+//     occupied_now[Q_from[i]->id] = NO_AGENT;
+//     if (Q_to[i] != nullptr) occupied_next[Q_to[i]->id] = NO_AGENT;
+//   }
+//
+//   return success;
+// }
+
+
+bool PIBT::funcPIBT(const int i, const Config &Q_from, Config &Q_to,std::unordered_set<Vertex *> &ban)
 {
   const auto K = Q_from[i]->neighbor.size();
+
+  flg_swap = false;
 
   // exploit scatter data
   Vertex *prioritized_vertex = nullptr;
@@ -119,21 +185,40 @@ bool PIBT::funcPIBT(const int i, const Config &Q_from, Config &Q_to)
     auto u = C_next[i][k];
 
     // avoid vertex conflicts
-    if (occupied_next[u->id] != NO_AGENT) continue;
+    if (occupied_next[u->id] != NO_AGENT || ban.find(u) != ban.end()) continue;
 
     const auto j = occupied_now[u->id];
+    //
+    // // avoid swap conflicts with constraints
+    // if (j != NO_AGENT && Q_to[j] == Q_from[i]) continue;
+    //
+    // // reserve next location
+    // occupied_next[u->id] = i;
+    // Q_to[i] = u;
+    //
+    // // priority inheritance
+    // if (j != NO_AGENT && u != Q_from[i] && Q_to[j] == nullptr &&
+    //     !funcPIBT(j, Q_from, Q_to,ban))
+    //   continue;
 
-    // avoid swap conflicts with constraints
-    if (j != NO_AGENT && Q_to[j] == Q_from[i]) continue;
+    if (j != NO_AGENT && j != i) {
+        // reserve next location
+        occupied_next[Q_from[i]->id] = i;
+        Q_to[i] = Q_from[i];
+        ban.insert(u);
 
-    // reserve next location
-    occupied_next[u->id] = i;
-    Q_to[i] = u;
-
-    // priority inheritance
-    if (j != NO_AGENT && u != Q_from[i] && Q_to[j] == nullptr &&
-        !funcPIBT(j, Q_from, Q_to))
-      continue;
+        // priority inheritance
+        if (j != NO_AGENT && u != Q_from[i] && Q_to[j] == nullptr &&
+            !funcPIBT(j, Q_from, Q_to,ban)) {
+          ban.erase(u);
+          occupied_next[Q_from[i]->id] = NO_AGENT;
+          Q_to[i] = nullptr;
+          continue;
+            }
+      } else {
+        occupied_next[u->id] = i;
+        Q_to[i] = u;
+      }
 
     // success to plan next one step
     if (flg_swap && k == 0) swap_operation();
@@ -145,6 +230,96 @@ bool PIBT::funcPIBT(const int i, const Config &Q_from, Config &Q_to)
   Q_to[i] = Q_from[i];
   return false;
 }
+
+// bool PIBT::funcPIBT(const int i, const Config &Q_from, Config &Q_to, std::unordered_set<Vertex *> &ban)
+// {
+//   const auto K = Q_from[i]->neighbor.size();
+//
+//   flg_swap = false;
+//
+//   // exploit scatter data
+//   Vertex *prioritized_vertex = nullptr;
+//   if (scatter != nullptr) {
+//     auto itr_s = scatter->scatter_data[i].find(Q_from[i]->id);
+//     if (itr_s != scatter->scatter_data[i].end()) {
+//       prioritized_vertex = itr_s->second;
+//     }
+//   }
+//
+//   // set C_next
+//   for (size_t k = 0; k < K; ++k) {
+//     auto u = Q_from[i]->neighbor[k];
+//     C_next[i][k] = u;
+//     tie_breakers[u->id] = get_random_float(MT);  // set tie-breaker
+//   }
+//   C_next[i][K] = Q_from[i];
+//
+//   // sort, note: K + 1 is sufficient
+//   std::sort(C_next[i].begin(), C_next[i].begin() + K + 1,
+//             [&](Vertex *const v, Vertex *const u) {
+//               if (v == prioritized_vertex) return true;
+//               if (u == prioritized_vertex) return false;
+//               return D->get(i, v) + tie_breakers[v->id] <
+//                      D->get(i, u) + tie_breakers[u->id];
+//             });
+//
+//   // emulate swap
+//   auto swap_agent = NO_AGENT;
+//   if (flg_swap) {
+//     swap_agent = is_swap_required_and_possible(i, Q_from, Q_to);
+//     if (swap_agent != NO_AGENT) {
+//       // reverse vertex scoring
+//       std::reverse(C_next[i].begin(), C_next[i].begin() + K + 1);
+//     }
+//   }
+//
+//   auto swap_operation = [&]() {
+//     if (swap_agent != NO_AGENT &&                 // swap_agent exists
+//         Q_to[swap_agent] == nullptr &&            // not decided
+//         occupied_next[Q_from[i]->id] == NO_AGENT  // free
+//     ) {
+//       // pull swap_agent
+//       occupied_next[Q_from[i]->id] = swap_agent;
+//       Q_to[swap_agent] = Q_from[i];
+//     }
+//   };
+//
+//   // main loop
+//   for (size_t k = 0; k < K + 1; ++k) {
+//     auto u = C_next[i][k];
+//
+//     // avoid vertex conflicts
+//     if (occupied_next[u->id] != NO_AGENT || ban.find(u) != ban.end()) continue;
+//
+//     const auto j = occupied_now[u->id];
+//
+//     if (j != NO_AGENT && j != i) {
+//       // reserve next location
+//       occupied_next[Q_from[i]->id] = i;
+//       Q_to[i] = Q_from[i];
+//       ban.insert(u);
+//
+//       // priority inheritance
+//       if (j != NO_AGENT && u != Q_from[i] && Q_to[j] == nullptr &&
+//           !funcPIBT(j, Q_from, Q_to,ban)) {
+//         ban.erase(u);
+//         continue;
+//           }
+//     } else {
+//       occupied_next[u->id] = i;
+//       Q_to[i] = u;
+//     }
+//
+//     // success to plan next one step
+//     if (flg_swap && k == 0) swap_operation();
+//     return true;
+//   }
+//
+//   // failed to secure node
+//   occupied_next[Q_from[i]->id] = i;
+//   Q_to[i] = Q_from[i];
+//   return false;
+// }
 
 int PIBT::is_swap_required_and_possible(const int i, const Config &Q_from,
                                         Config &Q_to)

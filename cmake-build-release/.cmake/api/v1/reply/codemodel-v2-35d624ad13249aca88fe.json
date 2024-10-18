@@ -1,0 +1,177 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"jsonFile" : "directory-.-Release-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7
+					]
+				},
+				{
+					"build" : "lacam3",
+					"jsonFile" : "directory-lacam3-Release-acad4f5e12531ec68c8c.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "lacam3",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "third_party/argparse",
+					"jsonFile" : "directory-third_party.argparse-Release-dd1e358cc425a68e89c4.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12.4"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 2,
+					"source" : "third_party/argparse"
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "lacam-project",
+					"targetIndexes" : 
+					[
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "lacam3",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2
+					],
+					"name" : "argparse",
+					"parentIndex" : 0
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "lacam3::@28c83def07a55ec885f9",
+					"jsonFile" : "target-lacam3-Release-7aed6ffcc6668b442590.json",
+					"name" : "lacam3",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "main::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-main-Release-b3acbae284396f968530.json",
+					"name" : "main",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_dist_table::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_dist_table-Release-66e7654ae1116ab884c4.json",
+					"name" : "test_dist_table",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_graph::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_graph-Release-4ba242b05c22f462b355.json",
+					"name" : "test_graph",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_instance::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_instance-Release-3f7fe83faab44b19b417.json",
+					"name" : "test_instance",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_planner::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_planner-Release-8ebf874cbd095103f776.json",
+					"name" : "test_planner",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_post_processing::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_post_processing-Release-4f5fab2729283edca72a.json",
+					"name" : "test_post_processing",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_sipp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_sipp-Release-f7000cc2435e3c9c8773.json",
+					"name" : "test_sipp",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/david/\u6587\u6863/GitHub/Engineering_lacam/cmake-build-release",
+		"source" : "/home/david/\u6587\u6863/GitHub/Engineering_lacam"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}
